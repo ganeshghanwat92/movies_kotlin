@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/movieHomeFragment"
+            android:title="Movie"
+            android:icon="@drawable/ic_baseline_movie_24"/>
+
+    <item android:id="@+id/tvHomeFragment"
+            android:title="TV Shows"
+            android:icon="@drawable/ic_baseline_tv_24"/>
+
+    <item android:id="@+id/multiSearchFragment"
+            android:title="Search"
+            android:icon="@drawable/ic_baseline_search_24"/>
+
+
+</menu>
