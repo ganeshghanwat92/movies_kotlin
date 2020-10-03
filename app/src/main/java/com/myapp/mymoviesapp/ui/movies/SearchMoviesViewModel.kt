@@ -8,8 +8,6 @@ import androidx.lifecycle.liveData
 import com.myapp.mymoviesapp.datamodel.movie.MovieSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -27,7 +25,7 @@ class SearchMoviesViewModel @Inject constructor(private val repo : Repository) :
 
         emit(ResultWrapper.Loading(boolean = true))
 
-        val response = RemoteDataSource(ApiClient.apiService).searchMoviesWithPageNumber(query, page)
+        val response = repo.searchMoviesWithPageNumber(query, page)
 
         emit(response)
 

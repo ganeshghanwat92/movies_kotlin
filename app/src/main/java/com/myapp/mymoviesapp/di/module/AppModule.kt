@@ -1,8 +1,7 @@
 package com.myapp.mymoviesapp.di.module
 
-import com.myapp.mymoviesapp.di.scope.ActivityScope
+import com.myapp.mymoviesapp.Constants
 import com.myapp.mymoviesapp.repository.Repository
-import com.myapp.mymoviesapp.repository.remote.ApiClient
 import com.myapp.mymoviesapp.repository.remote.ApiService
 import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
 import dagger.Module
@@ -18,7 +17,7 @@ class AppModule {
     @Singleton
     fun providesRetrofit() : Retrofit{
         return Retrofit.Builder()
-            .baseUrl(ApiClient.baseUrl)
+            .baseUrl(Constants.baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
