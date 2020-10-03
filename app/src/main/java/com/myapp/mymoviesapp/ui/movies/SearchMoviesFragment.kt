@@ -1,5 +1,6 @@
 package com.myapp.mymoviesapp.ui.movies
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -9,21 +10,20 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.myapp.mymoviesapp.R
-import com.myapp.mymoviesapp.SearchMoviesViewModelFactory
 import com.myapp.mymoviesapp.Utils
+import com.myapp.mymoviesapp.ViewModelFactory
 import com.myapp.mymoviesapp.datamodel.movie.MovieSearchResponse
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.search_movies_fragment.*
+import javax.inject.Inject
 
 
 class SearchMoviesFragment : Fragment() {
@@ -32,7 +32,10 @@ class SearchMoviesFragment : Fragment() {
         fun newInstance() = SearchMoviesFragment()
     }
 
-    private lateinit var viewModel: SearchMoviesViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: SearchMoviesViewModel by viewModels { viewModelFactory }
 
     lateinit var progressBar: ProgressBar
     lateinit var recyclerView: RecyclerView
@@ -48,10 +51,13 @@ class SearchMoviesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this,
-            SearchMoviesViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))
-        ).get(SearchMoviesViewModel::class.java)
+      //  viewModel = ViewModelProvider(this, SearchMoviesViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))).get(SearchMoviesViewModel::class.java)
 
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

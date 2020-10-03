@@ -1,31 +1,28 @@
 package com.myapp.mymoviesapp.ui.multisearch
 
-import androidx.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.myapp.mymoviesapp.MultiSearchViewModelFactory
 import com.myapp.mymoviesapp.R
 import com.myapp.mymoviesapp.Utils
+import com.myapp.mymoviesapp.ViewModelFactory
 import com.myapp.mymoviesapp.datamodel.multisearch.Result
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
-import com.myapp.mymoviesapp.ui.movies.SearchMoviesRecyclerAdapter
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.multi_search_fragment.*
-import kotlinx.android.synthetic.main.search_movies_fragment.*
+import javax.inject.Inject
 
 class MultiSearchFragment : Fragment() {
 
@@ -34,7 +31,10 @@ class MultiSearchFragment : Fragment() {
             MultiSearchFragment()
     }
 
-    private lateinit var viewModel: MultiSearchViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: MultiSearchViewModel by viewModels { viewModelFactory }
 
     lateinit var progressBar: ProgressBar
     lateinit var recyclerView: RecyclerView
@@ -48,6 +48,11 @@ class MultiSearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.multi_search_fragment, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,8 +106,7 @@ class MultiSearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this,MultiSearchViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))).get(MultiSearchViewModel::class.java)
-        // TODO: Use the ViewModel
+      //  viewModel = ViewModelProvider(this,MultiSearchViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))).get(MultiSearchViewModel::class.java)
     }
 
     private fun listenLiveDataChange() {

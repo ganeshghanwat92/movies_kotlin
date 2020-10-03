@@ -88,6 +88,9 @@ dependencies {
 
     api 'com.google.dagger:dagger:2.25.2'
     kapt 'com.google.dagger:dagger-compiler:2.25.2'
+    api 'com.google.dagger:dagger-android:2.25.2'
+    api 'com.google.dagger:dagger-android-support:2.25.2' // if you use the support libraries
+    kapt 'com.google.dagger:dagger-android-processor:2.25.2'
 
   //  implementation project('::myandroidmodule')
     implementation (name: 'myandroidmodule-release', ext:'aar')

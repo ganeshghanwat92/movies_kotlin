@@ -1,5 +1,6 @@
 package com.myapp.mymoviesapp.ui.tvshow
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,21 +9,19 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.myapp.mymoviesapp.R
-import com.myapp.mymoviesapp.SearchTVShowsViewModelFactory
+import com.myapp.mymoviesapp.ViewModelFactory
 import com.myapp.mymoviesapp.datamodel.tv.Result
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.tv_show_search_fragment.*
-import kotlinx.android.synthetic.main.tv_show_search_fragment.recyclerViewTVShows
+import javax.inject.Inject
 
 class TvShowSearchFragment : Fragment() {
 
@@ -30,7 +29,11 @@ class TvShowSearchFragment : Fragment() {
         fun newInstance() = TvShowSearchFragment()
     }
 
-    private lateinit var viewModel: TvShowSearchViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: TvShowSearchViewModel by viewModels { viewModelFactory }
+
     lateinit var recyclerView: RecyclerView
     lateinit var progressBar: ProgressBar
     lateinit var adapter: SearchTVShowsRecyclerAdapter
@@ -43,6 +46,11 @@ class TvShowSearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.tv_show_search_fragment, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,10 +138,6 @@ class TvShowSearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this,
-            SearchTVShowsViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))
-        ).get(TvShowSearchViewModel::class.java)
-
     }
 
 }

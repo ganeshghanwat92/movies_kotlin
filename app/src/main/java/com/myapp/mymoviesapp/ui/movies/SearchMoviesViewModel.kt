@@ -11,8 +11,9 @@ import com.myapp.mymoviesapp.repository.ResultWrapper
 import com.myapp.mymoviesapp.repository.remote.ApiClient
 import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class SearchMoviesViewModel(private val repo : Repository) : ViewModel() {
+class SearchMoviesViewModel @Inject constructor(private val repo : Repository) : ViewModel() {
 
     private var jobSearchMovie : CompletableJob? = null
 

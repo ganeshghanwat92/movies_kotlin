@@ -8,8 +8,9 @@ import com.myapp.mymoviesapp.datamodel.movie.MovieDetails
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class MovieDetailViewModel(val repo : Repository) : ViewModel() {
+class MovieDetailViewModel @Inject constructor(val repo : Repository) : ViewModel() {
 
     private var jobMovieDetail : CompletableJob? = null
 

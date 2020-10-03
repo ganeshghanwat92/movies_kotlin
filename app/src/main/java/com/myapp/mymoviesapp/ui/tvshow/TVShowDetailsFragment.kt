@@ -1,13 +1,14 @@
 package com.myapp.mymoviesapp.ui.tvshow
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -15,16 +16,15 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.myapp.mymoviesapp.R
-import com.myapp.mymoviesapp.TVShowDetailsViewModelFactory
 import com.myapp.mymoviesapp.Utils
+import com.myapp.mymoviesapp.ViewModelFactory
 import com.myapp.mymoviesapp.datamodel.tv.TVShowDetails
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.error_layout.*
 import kotlinx.android.synthetic.main.movie_detail_fragment.textViewReleaseDate
 import kotlinx.android.synthetic.main.tv_show_details_fragment.*
+import javax.inject.Inject
 
 class TVShowDetailsFragment : Fragment() {
 
@@ -32,15 +32,19 @@ class TVShowDetailsFragment : Fragment() {
         fun newInstance() = TVShowDetailsFragment()
     }
 
-    private lateinit var viewModel: TVShowDetailsViewModel
+    @Inject
+     lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModel: TVShowDetailsViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, TVShowDetailsViewModelFactory(Repository(
-            RemoteDataSource(ApiClient.apiService)
-        ))).get(TVShowDetailsViewModel::class.java)
 
+    }
 
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

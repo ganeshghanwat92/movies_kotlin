@@ -1,6 +1,8 @@
 package com.myapp.mymoviesapp.repository.remote
 
-class RemoteDataSource (val apiService: ApiService) : BaseDataSource() {
+import javax.inject.Inject
+
+class RemoteDataSource @Inject constructor(val apiService: ApiService) : BaseDataSource() {
 
      val API_KEY : String = "5b43064688877f072a019cc2c3a8c632";
 

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-   private const val baseUrl: String = "https://api.themoviedb.org/"
+     val baseUrl: String = "https://api.themoviedb.org/"
 
 
    private val retrofit by lazy {

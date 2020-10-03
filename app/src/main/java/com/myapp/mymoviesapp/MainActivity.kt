@@ -2,6 +2,7 @@ package com.myapp.mymoviesapp
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModelProvider
@@ -10,23 +11,31 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.myapp.mymoviesapp.repository.Repository
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
-
-    lateinit var viewModel : MainActivityViewModel
+class MainActivity : AppCompatActivity(), HasAndroidInjector{
 
     val appBarConfiguration = AppBarConfiguration(setOf(R.id.movieHomeFragment,R.id.tvHomeFragment,R.id.multiSearchFragment))
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+     val viewModel : MainActivityViewModel by viewModels { viewModelFactory  }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-      //  startActivity(Intent(this, MainModuleActivity::class.java))
+      //  viewModel = ViewModelProvider(this,viewModelFactory).get(MainActivityViewModel::class.java)
+
+        viewModel.getNowPlayingMovies()
+        //  startActivity(Intent(this, MainModuleActivity::class.java))
 
         buttonAAA.setOnClickListener {
 
@@ -45,12 +54,18 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        viewModel = ViewModelProvider(this,MainActivityViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))).get(MainActivityViewModel::class.java)
 
     }
 
     override fun onSupportNavigateUp(): Boolean {
         findNavController(R.id.fragment).navigateUp(appBarConfiguration)
         return super.onSupportNavigateUp()
+    }
+
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any>? {
+        return dispatchingAndroidInjector
     }
 }

@@ -7,8 +7,9 @@ import com.myapp.mymoviesapp.datamodel.tv.TVShowDetails
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class TVShowDetailsViewModel(private val repository: Repository) : ViewModel() {
+class TVShowDetailsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     private var jobTVShowDetails : CompletableJob? = null
 

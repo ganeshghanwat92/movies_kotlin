@@ -7,8 +7,9 @@ import com.myapp.mymoviesapp.datamodel.tv.TVSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class TvShowSearchViewModel(private val repo : Repository) : ViewModel() {
+class TvShowSearchViewModel @Inject constructor(private val repo : Repository) : ViewModel() {
 
     private var jobSearchTVShow : CompletableJob? = null
 

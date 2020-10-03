@@ -7,8 +7,9 @@ import com.myapp.mymoviesapp.datamodel.tv.TVSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class TvHomeViewModel(private val repository: Repository) : ViewModel() {
+class TvHomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     private val _onAirLiveData = MutableLiveData<ResultWrapper<TVSearchResponse>>()
 

@@ -1,8 +1,9 @@
 package com.myapp.mymoviesapp.repository
 
 import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import javax.inject.Inject
 
-class Repository(val remoteDataSource: RemoteDataSource) {
+class Repository @Inject constructor(val remoteDataSource: RemoteDataSource) {
 
    suspend fun searchMovies(query: String)  = remoteDataSource.searchMovies(query)
 

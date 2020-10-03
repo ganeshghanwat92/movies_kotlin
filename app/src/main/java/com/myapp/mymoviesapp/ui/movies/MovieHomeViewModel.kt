@@ -7,8 +7,9 @@ import com.myapp.mymoviesapp.datamodel.movie.MovieSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class MovieHomeViewModel(private val repository: Repository) : ViewModel() {
+class MovieHomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
 
     private val _nowPlayingMoviesLiveData = MutableLiveData<ResultWrapper<MovieSearchResponse>>()

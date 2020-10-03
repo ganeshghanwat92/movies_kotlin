@@ -1,8 +1,7 @@
 package com.myapp.mymoviesapp.ui.movies
 
-import androidx.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +9,18 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.core.os.bundleOf
 import androidx.core.widget.ContentLoadingProgressBar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.myapp.mymoviesapp.MovieHomeViewModelFactory
 import com.myapp.mymoviesapp.R
 import com.myapp.mymoviesapp.datamodel.movie.MovieSearchResponse
 import com.myapp.mymoviesapp.datamodel.movie.Result
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 class MovieHomeFragment : Fragment() {
 
@@ -29,7 +28,11 @@ class MovieHomeFragment : Fragment() {
         fun newInstance() = MovieHomeFragment()
     }
 
-    private lateinit var viewModel: MovieHomeViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MovieHomeViewModel by viewModels { viewModelFactory }
+
 
     private lateinit var recyclerViewNowPlaying: RecyclerView
     private lateinit var recyclerViewUpcoming: RecyclerView
@@ -118,9 +121,14 @@ class MovieHomeFragment : Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, MovieHomeViewModelFactory(Repository(RemoteDataSource(ApiClient.apiService)))).get(MovieHomeViewModel::class.java)
+       // viewModel = ViewModelProvider(this, viewModelFactory).get(MovieHomeViewModel::class.java)
 
         listenNowPlyingMoviesDataChange()
         listenUpcomingMoviesDataChange()

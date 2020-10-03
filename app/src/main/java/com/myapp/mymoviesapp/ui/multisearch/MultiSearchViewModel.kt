@@ -7,8 +7,9 @@ import com.myapp.mymoviesapp.datamodel.multisearch.MultiSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class MultiSearchViewModel(private val repository: Repository) : ViewModel() {
+class MultiSearchViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     private var jobMultiSearch : CompletableJob? = null
 

@@ -1,5 +1,6 @@
 package com.myapp.mymoviesapp.ui.tvshow
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,23 +10,25 @@ import android.widget.EditText
 import androidx.core.os.bundleOf
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.myapp.mymoviesapp.R
-import com.myapp.mymoviesapp.TvHomeViewModelFactory
+import com.myapp.mymoviesapp.ViewModelFactory
 import com.myapp.mymoviesapp.datamodel.tv.Result
 import com.myapp.mymoviesapp.datamodel.tv.TVSearchResponse
-import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import com.myapp.mymoviesapp.repository.remote.ApiClient
-import com.myapp.mymoviesapp.repository.remote.RemoteDataSource
+import dagger.android.support.AndroidSupportInjection
+import javax.inject.Inject
 
 
 class TvHomeFragment : Fragment() {
 
-    lateinit var viewModel: TvHomeViewModel
+    @Inject
+     lateinit var viewModelFactory: ViewModelFactory
+
+   private val viewModel: TvHomeViewModel by viewModels { viewModelFactory }
 
     private lateinit var recyclerViewOnAir: RecyclerView
     private lateinit var recyclerViewPopular: RecyclerView
@@ -48,11 +51,6 @@ class TvHomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, TvHomeViewModelFactory(Repository(
-            RemoteDataSource(ApiClient.apiService)
-        ))
-        ).get(TvHomeViewModel::class.java)
-
     }
 
     override fun onCreateView(
@@ -61,6 +59,11 @@ class TvHomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tv_home, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
