@@ -5,13 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.myapp.mymoviesapp.CoroutinesDispatcherProvider
 import com.myapp.mymoviesapp.datamodel.movie.MovieSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SearchMoviesViewModel @Inject constructor(private val repo : Repository) : ViewModel() {
+class SearchMoviesViewModel @Inject constructor(private val repo : Repository, private val coroutinesDispatcherProvider: CoroutinesDispatcherProvider) : ViewModel() {
 
     private var jobSearchMovie : CompletableJob? = null
 
@@ -19,7 +23,7 @@ class SearchMoviesViewModel @Inject constructor(private val repo : Repository) :
 
     val  liveData : LiveData<ResultWrapper<MovieSearchResponse>> get() = _liveData
 
-    fun loadMoviesNextPage(query : String, page : Int) =  liveData(context = CoroutineScope(Dispatchers.IO).coroutineContext) {
+    fun loadMoviesNextPage(query : String, page : Int) =  liveData(context = CoroutineScope(coroutinesDispatcherProvider.io).coroutineContext) {
 
         Log.d("SSSSSSSS", "Repository searchMovies q = " + query)
 
@@ -36,11 +40,11 @@ class SearchMoviesViewModel @Inject constructor(private val repo : Repository) :
 
         jobSearchMovie = Job()
 
+        _liveData.postValue(ResultWrapper.Loading(true))
+
         jobSearchMovie?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
-
-                _liveData.postValue(ResultWrapper.Loading(true))
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
                     val res = repo.searchMovies(name)
 

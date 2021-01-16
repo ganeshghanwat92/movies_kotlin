@@ -3,13 +3,17 @@ package com.myapp.mymoviesapp.ui.tvshow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.myapp.mymoviesapp.CoroutinesDispatcherProvider
 import com.myapp.mymoviesapp.datamodel.tv.TVSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TvShowSearchViewModel @Inject constructor(private val repo : Repository) : ViewModel() {
+class TvShowSearchViewModel @Inject constructor(private val repo : Repository, private val coroutinesDispatcherProvider: CoroutinesDispatcherProvider) : ViewModel() {
 
     private var jobSearchTVShow : CompletableJob? = null
 
@@ -25,9 +29,7 @@ class TvShowSearchViewModel @Inject constructor(private val repo : Repository) :
 
         jobSearchTVShow?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
-
-                _tvShowsLiveData.postValue(ResultWrapper.Loading(true))
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
                 val res = repo.searchTVShows(name)
 

@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.myapp.mymoviesapp.CoroutinesDispatcherProvider
 import com.myapp.mymoviesapp.datamodel.movie.MovieDetails
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MovieDetailViewModel @Inject constructor(val repo : Repository) : ViewModel() {
+class MovieDetailViewModel @Inject constructor(val repo : Repository, val coroutinesDispatcherProvider: CoroutinesDispatcherProvider) : ViewModel() {
 
     private var jobMovieDetail : CompletableJob? = null
 
@@ -24,13 +28,17 @@ class MovieDetailViewModel @Inject constructor(val repo : Repository) : ViewMode
 
         jobMovieDetail = Job()
 
+        _liveDataMovie.value = ResultWrapper.Loading(true)
+
         jobMovieDetail?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
-                _liveDataMovie.postValue(ResultWrapper.Loading(true))
+                Log.d("SSSS","scope = "+this.coroutineContext)
+                Log.d("SSSS","Inside Global Scope "+Thread.currentThread().name.toString())
 
-                 val res = repo.getMovieDetails(id)
+
+                val res = repo.getMovieDetails(id)
 
                 Log.d("SSSS","getMovieDetails viewmodel res = $res")
 

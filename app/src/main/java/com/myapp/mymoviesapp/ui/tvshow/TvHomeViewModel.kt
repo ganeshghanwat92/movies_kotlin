@@ -3,13 +3,17 @@ package com.myapp.mymoviesapp.ui.tvshow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.myapp.mymoviesapp.CoroutinesDispatcherProvider
 import com.myapp.mymoviesapp.datamodel.tv.TVSearchResponse
 import com.myapp.mymoviesapp.repository.Repository
 import com.myapp.mymoviesapp.repository.ResultWrapper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TvHomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class TvHomeViewModel @Inject constructor(private val repository: Repository, private val coroutinesDispatcherProvider: CoroutinesDispatcherProvider) : ViewModel() {
 
     private val _onAirLiveData = MutableLiveData<ResultWrapper<TVSearchResponse>>()
 
@@ -21,11 +25,11 @@ class TvHomeViewModel @Inject constructor(private val repository: Repository) : 
 
         onAirJob = Job()
 
+        _onAirLiveData.postValue(ResultWrapper.Loading(true))
+
         onAirJob?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
-
-                _onAirLiveData.postValue(ResultWrapper.Loading(true))
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
                 val res =  repository.getOnAirTVShows()
 
@@ -47,11 +51,11 @@ class TvHomeViewModel @Inject constructor(private val repository: Repository) : 
 
         topRatedJob = Job()
 
+        _topRatedLiveData.postValue(ResultWrapper.Loading(true))
+
         topRatedJob?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
-
-                _topRatedLiveData.postValue(ResultWrapper.Loading(true))
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
                 val res = repository.getTopRatedTVShows()
 
@@ -71,11 +75,11 @@ class TvHomeViewModel @Inject constructor(private val repository: Repository) : 
 
         popularJob = Job()
 
+        _popularLiveData.postValue(ResultWrapper.Loading(true))
+
         popularJob?.let {
 
-            CoroutineScope(Dispatchers.IO + it).launch {
-
-                _popularLiveData.postValue(ResultWrapper.Loading(true))
+            CoroutineScope(coroutinesDispatcherProvider.io + it).launch {
 
                 val res = repository.getPopularTVShows()
 
